@@ -1,45 +1,304 @@
 ---
-title: "Aides Drug"
-author: "Put your name here!"
-date: "put the date here"
-output: html_document
+title: "AIDS Drug Test"
+author: "Jaime Mendizabal"
+date: "May 4, 2019"
+output:
+  html_document:
+    number_section: true
+    toc: true
+  
 ---
 
 ```{r include=FALSE,echo=FALSE}
 require(tidyverse)
 require(tigerstats)
 avast <-read.csv(file="avastivironal.csv",header=TRUE)
+infected = avast$infected
+sex = avast$sex
+treatment = avast$treatment
+Ivdrug = avast$Ivdrug
+LBGT=avast$LBGT
 ```
 
 # Introduction
 
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
 
-A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. Finish this!
+
+Data came from a study done in 2017, avast, used for a final project which was modified for this assignment.     
+
+A new  preventative aides vaccine (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. 
+
+The first question is this: Does abacavirinol have any affect on whether one contracts AIDS or not?
+
+Over all:      
+
+$H_0$: The vaccine is ineffective. Avacavirinoal has no effect on wheather one contracts AIDS or not.             
+$H_A$: The vaccine is effective. Avacavirinoal has an effect on wheather one contracts AIDS or not.   
+
+  
+The remaining questions are: Does abacavirinol have a different effect based on gender?   
+
+Gender:    
+
+$H_0$: Gender has no effect on whether avacavirinoal offers any protection against contracting AIDS.          
+$H_A$: Gender has an effect on whether avacavirinoal offers any protection against contracting AIDS.          
+  
+
+Drug use:    
+
+$H_0$: Drug use has no effect on whether avacavirinoal offers any protection against contracting AIDS.          
+$H_A$: Drug use has an effect on whether avacavirinoal offers any protection against contracting AIDS.       
+  
+Sexual :    
+
+$H_0$: Gender has no effect on whether avacavirinoal offers any protection against contracting AIDS.        
+$H_A$: Gender has an effect on whether avacavirinoal offers any protection against contracting AIDS.  
 
 # Methods
-
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
 
-#Results
+For each hypothesis test the graphical summary will be a bar chart, the numberical summary will be a cross tabulation, and the chi-squared test will be used for the inferential results.
+
+#Results General Effectiveness
+Is the vaccine effective in the general population?  
 
 <!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
 
-## Descriptive Results
+
+
+## Descriptive Results 
+
+We use a barchat to show the results on the general population.
 
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
 
+The following bar chart demonstrates that the placebo had little effect on the infection rate. However there is a drop in the infection rate in those who were administered the vaccine.
+
+```{r}
+barchartGC(~infected+treatment, type = "percent",xlab='general population')
+```
+
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+Numerical is a cross tabulation:
+
+Shows 423 people who were infected with AIDS and 10,168 people who were not infected received the drug while 612 people Infected with AIDS and 10,540 who were not infected with AIDS received the placebo. 
+
+```{r}
+xtabs(~infected+treatment)
+
+```
+
 
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
 
+Infering from the bar chart, numeric table and the chi-squared test the results demonstrate that the vaccine is reasonably effective on the general population.
+
+```{r}
+chisqtestGC(~infected+treatment)
+```
+```{r}
+avast=xtabs(~infected+treatment)
+fisher.test(avast)
+```
+
+
+$H_0$: The vaccine is ineffective. Avacavirinoal has no effect on wheather one contracts AIDS or not.           
+$H_A$: The vaccine is effective. Avacavirinoal has an effect on wheather one contracts AIDS or not.     
+  
+
+Null hypothesis is that the vaccine has no effect on the general infected population.    
+
+The p-value was  0 , so we reject the null hypothesis which is smaller than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence. 
+
+  
+#Results Gender Effectiveness
+Does gender have an effect on the vaccines effectivness?
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+## Descriptive Results
+
+We use a bar chart to show the results of the effect sex has on the vaccine.
+
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+The following bar chart demonstrates that the vaccine appears to be similarly effective on females and males.
+
+```{r}
+barchartGC(~sex+treatment,  type = "percent", xlab='vaccine', main="Sex")
+```
+
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+Numerical is a cross tabulation:  
+This shows that 5,694 females and 4,897 males received the drug, while 6,074 females and 5,078 males received the placebo. 
+
+```{r}
+xtabs(~sex+treatment)
+```
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+Infering from the bar chart, numeric table and the chi-squared test the results demonstrate that the vaccine is only slightly  effectived by a persons gender.   
+
+```{r}
+chisqtestGC(~sex+treatment)
+```
+
+$H_0$: The vaccine is ineffective. Avacavirinoal has no effect on wheather one contracts AIDS or not.           
+$H_A$: The vaccine is effective. Avacavirinoal has an effect on wheather one contracts AIDS or not.     
+
+
+The hypothesis was that gender had no effect on the effectiveness of the vaccine.  
+
+The p-value was<  0.3048 , so fail to reject the null hypothesis which is greater than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.  
+
+
+#Results IV Drug Effectiveness
+Does IV drug use affects make a difference in vaccine effectivness?
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+## Descriptive Results
+Use a bar chart to show the results of the effect of IV drug use on the vaccine.  
+
+  
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+The following bar chart shows that the vaccine appears to be slightly more effective on non-users than the users.
+
+```{r}
+barchartGC(~Ivdrug+treatment, type = "percent",xlab='Vaccine', main='Ivdrug')
+```
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+Numerical summary is a cross tabulation:  
+The Cross tabulation shows that 9,508 people who are not IV drug users and 1,083 who are IV drug users received the treatment while 10,077 people who are not IV drug users and 1,075 who are IV drug users received the placebo.   
+
+```{r}
+xtabs(~Ivdrug+treatment)
+```
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+Infering from the bar chart, numeric table and the chi-squared test the results demonstrate that the vaccine is only slightly if effective at all by IV drug use.  
+
+```{r}
+chisqtestGC(~Ivdrug+treatment, data=avast)
+```
+
+
+$H_0$: The vaccine is ineffective. Avacavirinoal has no effect on wheather one contracts AIDS or not.         
+$H_A$: The vaccine is effective. Avacavirinoal has an effect on wheather one contracts AIDS or not.   
+
+
+The null hypothesis was that IV Drug use had no effect on the effectiveness of the vaccine.  
+
+The p-value was  0.155 , so we fail to reject the null hypothesis which is greater than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.    
+
+
+#Results sexual orientation
+Does sexual orientation make a difference in vaccine effectivness?
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+## Descriptive Results
+
+We use a bar chart to show the effectiveness of the vaccine on the homosexual population.   
+
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+The following bar chart demonstrates that the vaccine appears to be no more effective on homosexuals than anyone else.    
+
+```{r}
+barchartGC(~treatment+LBGT, data=avast, type = "percent",xlab='Homosexual', main='Vaccine')
+```
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+Numerical summary is a cross tabulation:  
+This shows that 9,414 straight individuals and 1,177 homosexual (LGBT) individuals received the drug while 9,787 straight individuals and 1,365 homosexual individuals received the placebo.
+
+```{r}
+xtabs(~treatment+LBGT)
+```
+
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+Infering from the bar chart, numeric table and the chi-squared test the results demonstrate that the vaccine is not effective on the LBGT population.   
+
+```{r}
+chisqtestGC(~treatment+LBGT)
+```
+
+$H_0$: The vaccine is ineffective. Avacavirinoal has no effect on wheather one contracts AIDS or not.           
+$H_A$: The vaccine is effective. Avacavirinoal has an effect on wheather one contracts AIDS or not.     
+
+
+The null hypothesis was that sexual orientation does not effect the effectiveness of the vaccine.    
+
+The p-value was 0.0104, so we reject the null hypothesis which is smaller than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.  
+
+
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+OVERALL:
+Null hypothesis is that the vaccine has no effect on the general infected population.    
+  
+The p-value was  0 , so we reject the null hypothesis which is smaller than .05. This is because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.      
+  
+
+GENDER:  
+The results demonstrate that the vaccine is reasonably effective on the general population. 
+The null hypothesis is that the vaccine has no effect on the general infected population.  
+
+The p-value was 0.3048 , so we fail to reject the null hypothesis which is smaller than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.  
+  
+  
+IV DRUG:  
+The results demonstrate that the vaccine is only slightly  effectived by gender at all.    
+The null hypothesis was that IV Drug use had no effect on the effectiveness of the vaccine.  
+
+The p-value was  0.155 , so we fail to reject the null hypothesis which is greater than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.  
+  
+
+Homosexual (LBGT):  
+The results demonstrate that the vaccine is not effective on the LBGT population.     
+The null hypothesis was that sexual orientation does not effect the effectiveness of the vaccine.  
+  
+The p-value was 0.0104, so we reject the null hypothesis which is smaller than .05. Because the response and explanatory values are categorical, the bar plot and chi-squared test | test for independence.  
+  
+
+The vaccine appears to have an effect on the general population. It seems to be unaffected by gender or IV drug use. The drug seems to have an affect on a small percentage of the homosexual population that was tested. So it seems like this needs further testing to be more conclusive as the results are less logical than they were with Iv drug use and gender. According to the numbers we rejected the null hypothesis which some-what contradicts the previous lack of influence that gender and drug use had.
